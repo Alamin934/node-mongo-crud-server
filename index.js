@@ -1,8 +1,12 @@
 const express = require('express');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 5000;
+//MiddleWare
+app.use(cors());
+app.use(express.json());
 
 const uri = "mongodb+srv://alamin934:Tt574OjtgKOJyBnX@cluster0.ogrrwih.mongodb.net/?retryWrites=true&w=majority";
 
@@ -17,20 +21,21 @@ async function run() {
         await client.connect();
         const database = client.db("practice");
         const usersCollection = database.collection("users");
-        // create a document to insert
-        const doc = {
-            email: "alaminsojib@gmail.com",
-            name: "alamin",
-        }
 
-        const result = await usersCollection.insertOne(doc);
-        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        app.post('/users', async (req, res) => {
+            const newUser = req.body;
+            const result = await usersCollection.insertOne(newUser);
+            res.json(result);
+            console.log('got user', req.body);
+            console.log('added user', result);
+        });
 
     }
     finally {
-        await client.close();
+        // await client.close();
     }
 }
+
 run().catch(console.dir);
 
 
