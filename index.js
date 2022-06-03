@@ -26,7 +26,7 @@ async function run() {
             const newUser = req.body;
             const result = await usersCollection.insertOne(newUser);
             res.json(result);
-            console.log('got user', req.body);
+            // console.log('got user', req.body);
             console.log('added user', result);
         });
 
