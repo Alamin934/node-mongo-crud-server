@@ -1,5 +1,6 @@
 const express = require('express');
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const cors = require('cors');
 
 const app = express();
@@ -22,6 +23,26 @@ async function run() {
         const database = client.db("practice");
         const usersCollection = database.collection("users");
 
+        //Get Api
+        app.get('/users', async (req, res) => {
+            const cursor = usersCollection.find({});
+            const users = await cursor.toArray();
+            // if ((await cursor.count()) === 0) {
+            //     console.log("No documents found!");
+            // }
+            res.send(users);
+        });
+
+        //Get Single Api
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const user = await usersCollection.findOne(query);
+            // console.log('get the user id', id);
+            res.send(user)
+        });
+
+        //POST Api
         app.post('/users', async (req, res) => {
             const newUser = req.body;
             const result = await usersCollection.insertOne(newUser);
@@ -29,6 +50,15 @@ async function run() {
             // console.log('got user', req.body);
             console.log('added user', result);
         });
+
+        //Delete Api
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(query);
+            console.log('deleting id', result);
+            res.json(result);
+        })
 
     }
     finally {
