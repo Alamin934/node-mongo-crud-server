@@ -52,7 +52,20 @@ async function run() {
         });
 
         //Update Api
-
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const updatedUser = req.body;
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    name: updatedUser.name,
+                    email: updatedUser.email
+                },
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        })
 
         //Delete Api
         app.delete('/users/:id', async (req, res) => {
