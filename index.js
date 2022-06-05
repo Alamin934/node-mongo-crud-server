@@ -64,8 +64,8 @@ async function run() {
                 },
             };
             const result = await usersCollection.updateOne(filter, updateDoc, options);
-
-            res.json('updating user', result);
+            console.log(result);
+            res.json(result);
 
         })
 
